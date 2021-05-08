@@ -1,3 +1,4 @@
-# lute-protyle
+# Protyle
 
-Lute Protyle data (.sy) parser and renderer.
+SiYuan doc data (.sy) parser and renderer.
+
