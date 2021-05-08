@@ -17,7 +17,7 @@ import (
 	"github.com/88250/lute/util"
 )
 
-func ParseSYJSON(luteEngine *lute.Lute, jsonData []byte) (ret *parse.Tree, err error) {
+func ParseJSON(luteEngine *lute.Lute, jsonData []byte) (ret *parse.Tree, err error) {
 	root := &ast.Node{}
 	err = UnmarshalJSON(jsonData, root)
 	if nil != err {
