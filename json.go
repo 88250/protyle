@@ -1,5 +1,5 @@
 // Protyle - 解析渲染思源笔记文档数据
-// Copyright (c) 2019-present, b3log.org
+// Copyright (c) 2021-present, b3log.org
 //
 // Lute is licensed under Mulan PSL v2.
 // You can use this software according to the terms and conditions of the Mulan PSL v2.
