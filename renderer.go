@@ -11,10 +11,10 @@
 package protyle
 
 import (
+	"github.com/88250/gulu"
 	"github.com/88250/lute/ast"
 	"github.com/88250/lute/parse"
 	"github.com/88250/lute/render"
-	"github.com/88250/lute/util"
 )
 
 type JSONRenderer struct {
@@ -37,16 +37,16 @@ func (r *JSONRenderer) renderNode(node *ast.Node, entering bool) ast.WalkStatus 
 		if nil != node.Previous {
 			r.WriteString(",")
 		}
-		node.Data, node.TypeStr = util.BytesToStr(node.Tokens), node.Type.String()
+		node.Data, node.TypeStr = gulu.Str.FromBytes(node.Tokens), node.Type.String()
 		node.Properties = parse.IAL2Map(node.KramdownIAL)
-		data, err := MarshalJSON(node)
+		data, err := gulu.JSON.MarshalJSON(node)
 		node.Data, node.TypeStr = "", ""
 		node.Properties = nil
 		if nil != err {
 			panic("marshal node to json failed: " + err.Error())
 			return ast.WalkStop
 		}
-		n := util.BytesToStr(data)
+		n := gulu.Str.FromBytes(data)
 		n = n[:len(n)-1] // 去掉结尾的 }
 		r.WriteString(n)
 		if nil != node.FirstChild {

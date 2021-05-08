@@ -11,15 +11,15 @@
 package protyle
 
 import (
+	"github.com/88250/gulu"
 	"github.com/88250/lute"
 	"github.com/88250/lute/ast"
 	"github.com/88250/lute/parse"
-	"github.com/88250/lute/util"
 )
 
 func ParseJSON(luteEngine *lute.Lute, jsonData []byte) (ret *parse.Tree, err error) {
 	root := &ast.Node{}
-	err = UnmarshalJSON(jsonData, root)
+	err = gulu.JSON.UnmarshalJSON(jsonData, root)
 	if nil != err {
 		return nil, err
 	}
@@ -40,7 +40,7 @@ func ParseJSON(luteEngine *lute.Lute, jsonData []byte) (ret *parse.Tree, err err
 }
 
 func genTreeByJSON(node *ast.Node, tree *parse.Tree, idMap *map[string]bool) {
-	node.Tokens, node.Type = util.StrToBytes(node.Data), ast.Str2NodeType(node.TypeStr)
+	node.Tokens, node.Type = gulu.Str.ToBytes(node.Data), ast.Str2NodeType(node.TypeStr)
 	node.Data, node.TypeStr = "", ""
 	node.KramdownIAL = parse.Map2IAL(node.Properties)
 	node.Properties = nil
