@@ -17,11 +17,11 @@ import (
 	"github.com/88250/lute/parse"
 )
 
-func ParseJSON(luteEngine *lute.Lute, jsonData []byte) (ret *parse.Tree, err error) {
+func ParseJSON(luteEngine *lute.Lute, jsonData []byte) (ret *parse.Tree, needFix bool, err error) {
 	root := &ast.Node{}
 	err = gulu.JSON.UnmarshalJSON(jsonData, root)
 	if nil != err {
-		return nil, err
+		return
 	}
 
 	ret = &parse.Tree{Name: "", Root: &ast.Node{Type: ast.NodeDocument, ID: root.ID}, Context: &parse.Context{ParseOption: luteEngine.ParseOptions}}
@@ -33,13 +33,13 @@ func ParseJSON(luteEngine *lute.Lute, jsonData []byte) (ret *parse.Tree, err err
 
 	idMap := map[string]bool{}
 	for _, child := range root.Children {
-		genTreeByJSON(child, ret, &idMap)
+		genTreeByJSON(child, ret, &idMap, &needFix)
 	}
 	ret.ID = ret.Root.ID
 	return
 }
 
-func genTreeByJSON(node *ast.Node, tree *parse.Tree, idMap *map[string]bool) {
+func genTreeByJSON(node *ast.Node, tree *parse.Tree, idMap *map[string]bool, needFix *bool) {
 	node.Tokens, node.Type = gulu.Str.ToBytes(node.Data), ast.Str2NodeType(node.TypeStr)
 	node.Data, node.TypeStr = "", ""
 	node.KramdownIAL = parse.Map2IAL(node.Properties)
@@ -49,11 +49,13 @@ func genTreeByJSON(node *ast.Node, tree *parse.Tree, idMap *map[string]bool) {
 	if node.IsBlock() && "" == node.ID {
 		node.ID = ast.NewNodeID()
 		node.SetIALAttr("id", node.ID)
+		*needFix = true
 	}
 	if "" != node.ID {
 		if _, ok := (*idMap)[node.ID]; ok {
 			node.ID = ast.NewNodeID()
 			node.SetIALAttr("id", node.ID)
+			*needFix = true
 		}
 		(*idMap)[node.ID] = true
 	}
@@ -65,7 +67,7 @@ func genTreeByJSON(node *ast.Node, tree *parse.Tree, idMap *map[string]bool) {
 		return
 	}
 	for _, child := range node.Children {
-		genTreeByJSON(child, tree, idMap)
+		genTreeByJSON(child, tree, idMap, needFix)
 	}
 	node.Children = nil
 }

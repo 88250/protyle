@@ -13,8 +13,8 @@ cloud.google.com/go/storage v1.0.0/go.mod h1:IhtSnM/ZTZV8YYJWCY8RULGVqBDmpoyjwiy
 dmitri.shuralyov.com/gpu/mtl v0.0.0-20190408044501-666a987793e9/go.mod h1:H6x//7gZCb22OMCxBHrMx7a5I7Hp++hsVxbQ4BYO7hU=
 github.com/88250/gulu v1.1.5 h1:vgdQWnOG+aiPtWK9kGbz0F0TKNTfxle3iAp1Wda29Ao=
 github.com/88250/gulu v1.1.5/go.mod h1:CDVdVgXcqT6JNaG9DA0mxMbHKYTmI+UNTX9SIHYFjA0=
-github.com/88250/lute v1.7.3-0.20210508062622-79621cc96413 h1:D/3zTGEEcA1V5kP0lmp4Y3BzY7K8vjHGoq6fVEm5gvk=
-github.com/88250/lute v1.7.3-0.20210508062622-79621cc96413/go.mod h1:LF5vuFXC2UrsAYbKBqLsafCbb9vkvqyshp469NEOUjM=
+github.com/88250/lute v1.7.3-0.20210515095619-1303afe16236 h1:05zh3yLE/9eF9xUvc04LA7sQ5NA05dPeIEuTTh9Q2vw=
+github.com/88250/lute v1.7.3-0.20210515095619-1303afe16236/go.mod h1:A2QwrrZpWqKJOYIbSZZ1lPPC1o1s6CjBduKwBvr0H6k=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
 github.com/OneOfOne/xxhash v1.2.2/go.mod h1:HSdplMjZKSmBqAxg5vPj2TmRDmfkzw+cTzAElWljhcU=
@@ -88,7 +88,6 @@ github.com/google/renameio v0.1.0/go.mod h1:KWCgfxg9yswjAJkECMjeO8J8rahYeXnNhOm4
 github.com/googleapis/gax-go/v2 v2.0.4/go.mod h1:0Wqv26UfaUD9n4G6kQubkQ+KchISgw+vpHVxEJEs9eg=
 github.com/googleapis/gax-go/v2 v2.0.5/go.mod h1:DWXyrwAJ9X0FpwwEdw+IPEYBICEFu5mhpdKc/us6bOk=
 github.com/gopherjs/gopherjs v0.0.0-20181017120253-0766667cb4d1/go.mod h1:wJfORRmW1u3UXTncJ5qlYoELFm8eSnnEO6hX4iZ3EWY=
-github.com/gopherjs/gopherjs v0.0.0-20210420193930-a4630ec28c79/go.mod h1:Opf9rtYVq0eTyX+aRVmRO9hE8ERAozcdrBxWG9Q6mkQ=
 github.com/gopherjs/gopherjs v0.0.0-20210503212227-fb464eba2686 h1:M8mGEEKe5MUkENNKwreWXhiF0X9vH93ur4nmuUc6kT8=
 github.com/gopherjs/gopherjs v0.0.0-20210503212227-fb464eba2686/go.mod h1:Opf9rtYVq0eTyX+aRVmRO9hE8ERAozcdrBxWG9Q6mkQ=
 github.com/gorilla/websocket v1.4.2/go.mod h1:YR8l580nyteQvAITg2hZ9XVh4b55+EU/adAjf1fMHhE=
