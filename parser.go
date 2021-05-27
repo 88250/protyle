@@ -11,6 +11,8 @@
 package protyle
 
 import (
+	"bytes"
+
 	"github.com/88250/gulu"
 	"github.com/88250/lute"
 	"github.com/88250/lute/ast"
@@ -46,6 +48,21 @@ func genTreeByJSON(node *ast.Node, tree *parse.Tree, idMap *map[string]bool, nee
 	node.Properties = nil
 
 	// 历史数据订正
+	fixLegacyData(node, idMap, needFix)
+
+	tree.Context.Tip.AppendChild(node)
+	tree.Context.Tip = node
+	defer tree.Context.ParentTip()
+	if nil == node.Children {
+		return
+	}
+	for _, child := range node.Children {
+		genTreeByJSON(child, tree, idMap, needFix)
+	}
+	node.Children = nil
+}
+
+func fixLegacyData(node *ast.Node, idMap *map[string]bool, needFix *bool) {
 	if node.IsBlock() && "" == node.ID {
 		node.ID = ast.NewNodeID()
 		node.SetIALAttr("id", node.ID)
@@ -60,14 +77,9 @@ func genTreeByJSON(node *ast.Node, tree *parse.Tree, idMap *map[string]bool, nee
 		(*idMap)[node.ID] = true
 	}
 
-	tree.Context.Tip.AppendChild(node)
-	tree.Context.Tip = node
-	defer tree.Context.ParentTip()
-	if nil == node.Children {
-		return
+	if ast.NodeIFrame == node.Type && bytes.Contains(node.Tokens, gulu.Str.ToBytes("iframe-content")) {
+		start := bytes.Index(node.Tokens, gulu.Str.ToBytes("<iframe"))
+		end := bytes.Index(node.Tokens, gulu.Str.ToBytes("</iframe>"))
+		node.Tokens = node.Tokens[start : end+9]
 	}
-	for _, child := range node.Children {
-		genTreeByJSON(child, tree, idMap, needFix)
-	}
-	node.Children = nil
 }
