@@ -81,5 +81,11 @@ func fixLegacyData(node *ast.Node, idMap *map[string]bool, needFix *bool) {
 		start := bytes.Index(node.Tokens, gulu.Str.ToBytes("<iframe"))
 		end := bytes.Index(node.Tokens, gulu.Str.ToBytes("</iframe>"))
 		node.Tokens = node.Tokens[start : end+9]
+		*needFix = true
+	}
+
+	if ast.NodeList == node.Type && 0 < len(node.Children) && 3 == node.Children[0].ListData.Typ && 3 != node.ListData.Typ {
+		node.ListData.Typ = 3
+		*needFix = true
 	}
 }
