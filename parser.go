@@ -90,7 +90,7 @@ func fixLegacyData(node *ast.Node, idMap *map[string]bool, needFix *bool) {
 		*needFix = true
 	}
 
-	if ast.NodeSuperBlock == node.Type && nil == node.FirstChild {
+	if ast.NodeSuperBlock == node.Type && 0 == len(node.Children) {
 		node.Type = ast.NodeParagraph
 		*needFix = true
 	}
