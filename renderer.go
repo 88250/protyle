@@ -39,6 +39,7 @@ func (r *JSONRenderer) renderNode(node *ast.Node, entering bool) ast.WalkStatus 
 		}
 		node.Data, node.TypeStr = gulu.Str.FromBytes(node.Tokens), node.Type.String()
 		node.Properties = parse.IAL2Map(node.KramdownIAL)
+		delete(node.Properties, "refcount")
 		data, err := gulu.JSON.MarshalJSON(node)
 		node.Data, node.TypeStr = "", ""
 		node.Properties = nil
