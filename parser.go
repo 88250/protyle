@@ -94,4 +94,12 @@ func fixLegacyData(node *ast.Node, idMap *map[string]bool, needFix *bool) {
 		node.Type = ast.NodeParagraph
 		*needFix = true
 	}
+
+	if ast.NodeImage == node.Type {
+		if "" != node.IALAttr("parent-style") && "" == node.IALAttr("style") {
+			node.SetIALAttr("style", node.IALAttr("parent-style"))
+			node.RemoveIALAttr("parent-style")
+			*needFix = true
+		}
+	}
 }
