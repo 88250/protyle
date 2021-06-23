@@ -12,6 +12,7 @@ package protyle
 
 import (
 	"bytes"
+	"strings"
 
 	"github.com/88250/gulu"
 	"github.com/88250/lute"
@@ -92,6 +93,11 @@ func fixLegacyData(node *ast.Node, idMap *map[string]bool, needFix *bool) {
 
 	if ast.NodeSuperBlock == node.Type && 0 == len(node.Children) {
 		node.Type = ast.NodeParagraph
+		*needFix = true
+	}
+
+	if ast.NodeMark == node.Type && 3 == len(node.Children) && "NodeText" == node.Children[1].TypeStr {
+		node.Children[1].Data = strings.TrimSpace(node.Children[1].Data)
 		*needFix = true
 	}
 }
