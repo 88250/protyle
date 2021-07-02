@@ -17,6 +17,7 @@ import (
 	"github.com/88250/gulu"
 	"github.com/88250/lute"
 	"github.com/88250/lute/ast"
+	"github.com/88250/lute/html"
 	"github.com/88250/lute/parse"
 )
 
@@ -99,5 +100,12 @@ func fixLegacyData(node *ast.Node, idMap *map[string]bool, needFix *bool) {
 	if ast.NodeMark == node.Type && 3 == len(node.Children) && "NodeText" == node.Children[1].TypeStr {
 		node.Children[1].Data = strings.TrimSpace(node.Children[1].Data)
 		*needFix = true
+	}
+
+	if ast.NodeInlineMathContent == node.Type {
+		if bytes.Contains(node.Tokens, []byte("&gt;")) || bytes.Contains(node.Tokens, []byte("&lt;")) {
+			node.Tokens = html.UnescapeHTML(node.Tokens)
+			*needFix = true
+		}
 	}
 }
