@@ -108,4 +108,11 @@ func fixLegacyData(node *ast.Node, idMap *map[string]bool, needFix *bool) {
 			*needFix = true
 		}
 	}
+
+	if ast.NodeHeading == node.Type {
+		if 6 < node.HeadingLevel {
+			node.HeadingLevel = 6
+			*needFix = true
+		}
+	}
 }
