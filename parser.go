@@ -50,9 +50,16 @@ func genTreeByJSON(node *ast.Node, tree *parse.Tree, idMap *map[string]bool, nee
 	node.Properties = nil
 
 	// 历史数据订正
-	if ast.NodeList == node.Type && 1 > len(node.Children) {
-		*needFix = true
-		return // 忽略空列表
+	if ast.NodeList == node.Type {
+		if 1 > len(node.Children) {
+			*needFix = true
+			return // 忽略空列表
+		}
+	} else if ast.NodeMathBlock == node.Type {
+		if 1 > len(node.Children) {
+			*needFix = true
+			return // 忽略空公式
+		}
 	}
 	fixLegacyData(node, idMap, needFix)
 
