@@ -116,7 +116,7 @@ func fixLegacyData(node *ast.Node, idMap *map[string]bool, needFix *bool) {
 	}
 
 	if ast.NodeInlineMathContent == node.Type {
-		if bytes.Contains(node.Tokens, []byte("&gt;")) || bytes.Contains(node.Tokens, []byte("&lt;")) {
+		if bytes.Contains(node.Tokens, []byte("&gt;")) || bytes.Contains(node.Tokens, []byte("&lt;")) || bytes.Contains(node.Tokens, []byte("&amp;")) || bytes.Contains(node.Tokens, []byte("&quot;")) {
 			node.Tokens = html.UnescapeHTML(node.Tokens)
 			*needFix = true
 		}
