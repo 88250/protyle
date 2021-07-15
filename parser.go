@@ -126,4 +126,9 @@ func fixLegacyData(node *ast.Node, idMap *map[string]bool, needFix *bool) {
 		node.HeadingLevel = 6
 		*needFix = true
 	}
+
+	if ast.NodeLinkDest == node.Type && bytes.HasPrefix(node.Tokens, []byte("assets/")) && bytes.HasSuffix(node.Tokens, []byte(" ")) {
+		node.Tokens = bytes.TrimSpace(node.Tokens)
+		*needFix = true
+	}
 }
