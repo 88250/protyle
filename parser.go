@@ -21,6 +21,28 @@ import (
 	"github.com/88250/lute/parse"
 )
 
+func ParseJSONWithoutFix(luteEngine *lute.Lute, jsonData []byte) (ret *parse.Tree, err error) {
+	root := &ast.Node{}
+	err = gulu.JSON.UnmarshalJSON(jsonData, root)
+	if nil != err {
+		return
+	}
+
+	ret = &parse.Tree{Name: "", Root: &ast.Node{Type: ast.NodeDocument, ID: root.ID}, Context: &parse.Context{ParseOption: luteEngine.ParseOptions}}
+	ret.Root.KramdownIAL = parse.Map2IAL(root.Properties)
+	ret.Context.Tip = ret.Root
+	if nil == root.Children {
+		return
+	}
+
+	idMap := map[string]bool{}
+	for _, child := range root.Children {
+		genTreeByJSON(child, ret, &idMap, nil, true)
+	}
+	ret.ID = ret.Root.ID
+	return
+}
+
 func ParseJSON(luteEngine *lute.Lute, jsonData []byte) (ret *parse.Tree, needFix bool, err error) {
 	root := &ast.Node{}
 	err = gulu.JSON.UnmarshalJSON(jsonData, root)
@@ -37,34 +59,36 @@ func ParseJSON(luteEngine *lute.Lute, jsonData []byte) (ret *parse.Tree, needFix
 
 	idMap := map[string]bool{}
 	for _, child := range root.Children {
-		genTreeByJSON(child, ret, &idMap, &needFix)
+		genTreeByJSON(child, ret, &idMap, &needFix, false)
 	}
 	ret.ID = ret.Root.ID
 	return
 }
 
-func genTreeByJSON(node *ast.Node, tree *parse.Tree, idMap *map[string]bool, needFix *bool) {
+func genTreeByJSON(node *ast.Node, tree *parse.Tree, idMap *map[string]bool, needFix *bool, ignoreFix bool) {
 	node.Tokens, node.Type = gulu.Str.ToBytes(node.Data), ast.Str2NodeType(node.TypeStr)
 	node.Data, node.TypeStr = "", ""
 	node.KramdownIAL = parse.Map2IAL(node.Properties)
 	node.Properties = nil
 
-	// 历史数据订正
-	if ast.NodeList == node.Type {
-		if 1 > len(node.Children) {
+	if !ignoreFix {
+		// 历史数据订正
+		if ast.NodeList == node.Type {
+			if 1 > len(node.Children) {
+				*needFix = true
+				return // 忽略空列表
+			}
+		} else if ast.NodeSuperBlock == node.Type && 4 > len(node.Children) {
 			*needFix = true
-			return // 忽略空列表
+			return // 忽略空超级块
+		} else if ast.NodeMathBlock == node.Type {
+			if 1 > len(node.Children) {
+				*needFix = true
+				return // 忽略空公式
+			}
 		}
-	} else if ast.NodeSuperBlock == node.Type && 4 > len(node.Children) {
-		*needFix = true
-		return // 忽略空超级块
-	} else if ast.NodeMathBlock == node.Type {
-		if 1 > len(node.Children) {
-			*needFix = true
-			return // 忽略空公式
-		}
+		fixLegacyData(node, idMap, needFix)
 	}
-	fixLegacyData(node, idMap, needFix)
 
 	tree.Context.Tip.AppendChild(node)
 	tree.Context.Tip = node
@@ -73,7 +97,7 @@ func genTreeByJSON(node *ast.Node, tree *parse.Tree, idMap *map[string]bool, nee
 		return
 	}
 	for _, child := range node.Children {
-		genTreeByJSON(child, tree, idMap, needFix)
+		genTreeByJSON(child, tree, idMap, needFix, ignoreFix)
 	}
 	node.Children = nil
 }
