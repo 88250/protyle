@@ -55,7 +55,7 @@ func genTreeByJSON(node *ast.Node, tree *parse.Tree, idMap *map[string]bool, nee
 			*needFix = true
 			return // 忽略空列表
 		}
-	} else if ast.NodeSuperBlock == node.Type && (0 == len(node.Children) || (3 == len(node.Children) && "NodeSuperBlockCloseMarker" == node.Children[2].TypeStr)) {
+	} else if ast.NodeSuperBlock == node.Type && 4 > len(node.Children) {
 		*needFix = true
 		return // 忽略空超级块
 	} else if ast.NodeMathBlock == node.Type {
