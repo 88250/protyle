@@ -55,6 +55,9 @@ func genTreeByJSON(node *ast.Node, tree *parse.Tree, idMap *map[string]bool, nee
 			*needFix = true
 			return // 忽略空列表
 		}
+	} else if ast.NodeSuperBlock == node.Type && (0 == len(node.Children) || (3 == len(node.Children) && "NodeSuperBlockCloseMarker" == node.Children[2].TypeStr)) {
+		*needFix = true
+		return // 忽略空超级块
 	} else if ast.NodeMathBlock == node.Type {
 		if 1 > len(node.Children) {
 			*needFix = true
@@ -100,11 +103,6 @@ func fixLegacyData(node *ast.Node, idMap *map[string]bool, needFix *bool) {
 	if ast.NodeList == node.Type && nil != node.ListData && 3 != node.ListData.Typ && 0 < len(node.Children) &&
 		nil != node.Children[0].ListData && 3 == node.Children[0].ListData.Typ {
 		node.ListData.Typ = 3
-		*needFix = true
-	}
-
-	if ast.NodeSuperBlock == node.Type && 0 == len(node.Children) {
-		node.Type = ast.NodeParagraph
 		*needFix = true
 	}
 
