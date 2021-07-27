@@ -49,7 +49,7 @@ func ParseJSON(luteEngine *lute.Lute, jsonData []byte) (ret *parse.Tree, needFix
 		return
 	}
 
-	ret = &parse.Tree{Name: "", Root: &ast.Node{Type: ast.NodeDocument, ID: root.ID}, Context: &parse.Context{ParseOption: luteEngine.ParseOptions}}
+	ret = &parse.Tree{Name: "", ID: root.ID, Root: &ast.Node{Type: ast.NodeDocument, ID: root.ID}, Context: &parse.Context{ParseOption: luteEngine.ParseOptions}}
 	ret.Root.KramdownIAL = parse.Map2IAL(root.Properties)
 	ret.Context.Tip = ret.Root
 	if nil == root.Children {
@@ -60,7 +60,6 @@ func ParseJSON(luteEngine *lute.Lute, jsonData []byte) (ret *parse.Tree, needFix
 	for _, child := range root.Children {
 		genTreeByJSON(child, ret, &idMap, &needFix, false)
 	}
-	ret.ID = ret.Root.ID
 	return
 }
 
