@@ -13,8 +13,8 @@ cloud.google.com/go/storage v1.0.0/go.mod h1:IhtSnM/ZTZV8YYJWCY8RULGVqBDmpoyjwiy
 dmitri.shuralyov.com/gpu/mtl v0.0.0-20190408044501-666a987793e9/go.mod h1:H6x//7gZCb22OMCxBHrMx7a5I7Hp++hsVxbQ4BYO7hU=
 github.com/88250/gulu v1.1.73 h1:4BP4W+62JMGOJJSbwK4wnvcS0RXh2zGpfGEcAxJGlBg=
 github.com/88250/gulu v1.1.73/go.mod h1:CDVdVgXcqT6JNaG9DA0mxMbHKYTmI+UNTX9SIHYFjA0=
-github.com/88250/lute v1.7.4-0.20210918095657-4a3145e7323c h1:+1jUKy5IcFXxzfXGnwvYKHoI9MtxOuxCFcqMSbN0kd0=
-github.com/88250/lute v1.7.4-0.20210918095657-4a3145e7323c/go.mod h1:PGJUfi/HWXMASs1jC9NM7GaYa/V/fpidQ+QEti2YG+I=
+github.com/88250/lute v1.7.4-0.20210918120711-d4a6454590e3 h1:ojkYQTaORGxQoU2b59GzGmQJbAA8P02YZNXBEiPDzbM=
+github.com/88250/lute v1.7.4-0.20210918120711-d4a6454590e3/go.mod h1:PGJUfi/HWXMASs1jC9NM7GaYa/V/fpidQ+QEti2YG+I=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
 github.com/OneOfOne/xxhash v1.2.2/go.mod h1:HSdplMjZKSmBqAxg5vPj2TmRDmfkzw+cTzAElWljhcU=
