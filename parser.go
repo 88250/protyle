@@ -19,6 +19,7 @@ import (
 	"github.com/88250/lute/ast"
 	"github.com/88250/lute/html"
 	"github.com/88250/lute/parse"
+	"github.com/88250/lute/util"
 )
 
 func ParseJSONWithoutFix(luteEngine *lute.Lute, jsonData []byte) (ret *parse.Tree, err error) {
@@ -51,6 +52,15 @@ func ParseJSON(luteEngine *lute.Lute, jsonData []byte) (ret *parse.Tree, needFix
 
 	ret = &parse.Tree{Name: "", ID: root.ID, Root: &ast.Node{Type: ast.NodeDocument, ID: root.ID}, Context: &parse.Context{ParseOption: luteEngine.ParseOptions}}
 	ret.Root.KramdownIAL = parse.Map2IAL(root.Properties)
+	for _, kv := range ret.Root.KramdownIAL {
+		if strings.Contains(kv[1], "\n") {
+			val := kv[1]
+			val = strings.ReplaceAll(val, "\n", util.IALValEscNewLine)
+			ret.Root.SetIALAttr(kv[0], val)
+			needFix = true
+		}
+	}
+
 	ret.Context.Tip = ret.Root
 	if nil == root.Children {
 		return
@@ -155,5 +165,14 @@ func fixLegacyData(node *ast.Node, idMap *map[string]bool, needFix *bool) {
 	if ast.NodeLinkDest == node.Type && bytes.HasPrefix(node.Tokens, []byte("assets/")) && bytes.HasSuffix(node.Tokens, []byte(" ")) {
 		node.Tokens = bytes.TrimSpace(node.Tokens)
 		*needFix = true
+	}
+
+	for _, kv := range node.KramdownIAL {
+		if strings.Contains(kv[1], "\n") {
+			val := kv[1]
+			val = strings.ReplaceAll(val, "\n", util.IALValEscNewLine)
+			node.SetIALAttr(kv[0], val)
+			*needFix = true
+		}
 	}
 }

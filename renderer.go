@@ -38,7 +38,7 @@ func (r *JSONRenderer) renderNode(node *ast.Node, entering bool) ast.WalkStatus 
 			r.WriteString(",")
 		}
 		node.Data, node.TypeStr = gulu.Str.FromBytes(node.Tokens), node.Type.String()
-		node.Properties = parse.IAL2Map(node.KramdownIAL)
+		node.Properties = ial2Map(node.KramdownIAL)
 		delete(node.Properties, "refcount")
 		data, err := gulu.JSON.MarshalJSON(node)
 		node.Data, node.TypeStr = "", ""
@@ -62,4 +62,12 @@ func (r *JSONRenderer) renderNode(node *ast.Node, entering bool) ast.WalkStatus 
 		}
 	}
 	return ast.WalkContinue
+}
+
+func ial2Map(ial [][]string) (ret map[string]string) {
+	ret = map[string]string{}
+	for _, kv := range ial {
+		ret[kv[0]] = kv[1]
+	}
+	return
 }
