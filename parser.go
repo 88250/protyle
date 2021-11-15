@@ -62,6 +62,10 @@ func ParseJSON(luteEngine *lute.Lute, jsonData []byte) (ret *parse.Tree, needFix
 
 	ret.Context.Tip = ret.Root
 	if nil == root.Children {
+		newPara := &ast.Node{Type: ast.NodeParagraph, ID: ast.NewNodeID()}
+		newPara.SetIALAttr("id", newPara.ID)
+		ret.Root.AppendChild(newPara)
+		needFix = true
 		return
 	}
 
