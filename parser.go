@@ -84,6 +84,14 @@ func genTreeByJSON(node *ast.Node, tree *parse.Tree, idMap *map[string]bool, nee
 
 	if !ignoreFix {
 		// 历史数据订正
+
+		if -1 == node.Type {
+			*needFix = true
+			node.Type = ast.NodeParagraph
+			node.AppendChild(&ast.Node{Type: ast.NodeText, Tokens: node.Tokens})
+			node.Children = nil
+		}
+
 		if ast.NodeList == node.Type {
 			if 1 > len(node.Children) {
 				*needFix = true
