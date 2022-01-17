@@ -116,7 +116,7 @@ func genTreeByJSON(node *ast.Node, tree *parse.Tree, idMap *map[string]bool, nee
 				return // 忽略空公式
 			}
 		}
-		fixLegacyData(node, idMap, needFix)
+		fixLegacyData(tree.Context.Tip, node, idMap, needFix)
 	}
 
 	tree.Context.Tip.AppendChild(node)
@@ -131,7 +131,7 @@ func genTreeByJSON(node *ast.Node, tree *parse.Tree, idMap *map[string]bool, nee
 	node.Children = nil
 }
 
-func fixLegacyData(node *ast.Node, idMap *map[string]bool, needFix *bool) {
+func fixLegacyData(tip, node *ast.Node, idMap *map[string]bool, needFix *bool) {
 	if node.IsBlock() && "" == node.ID {
 		node.ID = ast.NewNodeID()
 		node.SetIALAttr("id", node.ID)
@@ -173,6 +173,11 @@ func fixLegacyData(node *ast.Node, idMap *map[string]bool, needFix *bool) {
 
 	if ast.NodeLinkDest == node.Type && bytes.HasPrefix(node.Tokens, []byte("assets/")) && bytes.HasSuffix(node.Tokens, []byte(" ")) {
 		node.Tokens = bytes.TrimSpace(node.Tokens)
+		*needFix = true
+	}
+
+	if ast.NodeText == node.Type && nil != tip.LastChild && ast.NodeTagOpenMarker == tip.LastChild.Type && 1 > len(node.Tokens) {
+		node.Tokens = []byte("Untitled")
 		*needFix = true
 	}
 
