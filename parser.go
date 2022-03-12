@@ -153,6 +153,11 @@ func fixLegacyData(tip, node *ast.Node, idMap *map[string]bool, needFix *bool) {
 		*needFix = true
 	}
 
+	if ast.NodeWidget == node.Type && bytes.Contains(node.Tokens, gulu.Str.ToBytes("http://127.0.0.1:6806")) {
+		node.Tokens = bytes.ReplaceAll(node.Tokens, []byte("http://127.0.0.1:6806"), nil)
+		*needFix = true
+	}
+
 	if ast.NodeList == node.Type && nil != node.ListData && 3 != node.ListData.Typ && 0 < len(node.Children) &&
 		nil != node.Children[0].ListData && 3 == node.Children[0].ListData.Typ {
 		node.ListData.Typ = 3
