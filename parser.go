@@ -92,30 +92,39 @@ func genTreeByJSON(node *ast.Node, tree *parse.Tree, idMap *map[string]bool, nee
 			node.Children = nil
 		}
 
-		if ast.NodeList == node.Type {
+		switch node.Type {
+		case ast.NodeList:
 			if 1 > len(node.Children) {
 				*needFix = true
 				return // 忽略空列表
 			}
-		} else if ast.NodeListItem == node.Type {
+		case ast.NodeListItem:
 			if 1 > len(node.Children) {
 				*needFix = true
 				return // 忽略空列表项
 			}
-		} else if ast.NodeBlockquote == node.Type {
+		case ast.NodeBlockquote:
 			if 2 > len(node.Children) {
 				*needFix = true
 				return // 忽略空引述
 			}
-		} else if ast.NodeSuperBlock == node.Type && 4 > len(node.Children) {
-			*needFix = true
-			return // 忽略空超级块
-		} else if ast.NodeMathBlock == node.Type {
+		case ast.NodeSuperBlock:
+			if 4 > len(node.Children) {
+				*needFix = true
+				return // 忽略空超级块
+			}
+		case ast.NodeMathBlock:
 			if 1 > len(node.Children) {
 				*needFix = true
 				return // 忽略空公式
 			}
+		case ast.NodeBlockQueryEmbed:
+			if 1 > len(node.Children) {
+				*needFix = true
+				return // 忽略空查询嵌入块
+			}
 		}
+
 		fixLegacyData(tree.Context.Tip, node, idMap, needFix)
 	}
 
