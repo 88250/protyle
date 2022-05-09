@@ -197,10 +197,15 @@ func fixLegacyData(tip, node *ast.Node, idMap *map[string]bool, needFix *bool) {
 			*needFix = true
 		}
 	case ast.NodeTagCloseMarker:
-		if nil != tip.LastChild && "" == tip.LastChild.Text() {
-			tip.LastChild.Type = ast.NodeText
-			tip.LastChild.Tokens = []byte("Untitled")
-			*needFix = true
+		if nil != tip.LastChild {
+			if ast.NodeTagOpenMarker == tip.LastChild.Type {
+				tip.AppendChild(&ast.Node{Type: ast.NodeText, Tokens: []byte("Untitled")})
+				*needFix = true
+			} else if "" == tip.LastChild.Text() {
+				tip.LastChild.Type = ast.NodeText
+				tip.LastChild.Tokens = []byte("Untitled")
+				*needFix = true
+			}
 		}
 	}
 
