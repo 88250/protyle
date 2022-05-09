@@ -155,44 +155,53 @@ func fixLegacyData(tip, node *ast.Node, idMap *map[string]bool, needFix *bool) {
 		(*idMap)[node.ID] = true
 	}
 
-	if ast.NodeIFrame == node.Type && bytes.Contains(node.Tokens, gulu.Str.ToBytes("iframe-content")) {
-		start := bytes.Index(node.Tokens, gulu.Str.ToBytes("<iframe"))
-		end := bytes.Index(node.Tokens, gulu.Str.ToBytes("</iframe>"))
-		node.Tokens = node.Tokens[start : end+9]
-		*needFix = true
-	}
-
-	if ast.NodeWidget == node.Type && bytes.Contains(node.Tokens, gulu.Str.ToBytes("http://127.0.0.1:6806")) {
-		node.Tokens = bytes.ReplaceAll(node.Tokens, []byte("http://127.0.0.1:6806"), nil)
-		*needFix = true
-	}
-
-	if ast.NodeList == node.Type && nil != node.ListData && 3 != node.ListData.Typ && 0 < len(node.Children) &&
-		nil != node.Children[0].ListData && 3 == node.Children[0].ListData.Typ {
-		node.ListData.Typ = 3
-		*needFix = true
-	}
-
-	if ast.NodeMark == node.Type && 3 == len(node.Children) && "NodeText" == node.Children[1].TypeStr {
-		if strings.HasPrefix(node.Children[1].Data, " ") || strings.HasSuffix(node.Children[1].Data, " ") {
-			node.Children[1].Data = strings.TrimSpace(node.Children[1].Data)
+	switch node.Type {
+	case ast.NodeIFrame:
+		if bytes.Contains(node.Tokens, gulu.Str.ToBytes("iframe-content")) {
+			start := bytes.Index(node.Tokens, gulu.Str.ToBytes("<iframe"))
+			end := bytes.Index(node.Tokens, gulu.Str.ToBytes("</iframe>"))
+			node.Tokens = node.Tokens[start : end+9]
 			*needFix = true
 		}
-	}
-
-	if ast.NodeHeading == node.Type && 6 < node.HeadingLevel {
-		node.HeadingLevel = 6
-		*needFix = true
-	}
-
-	if ast.NodeLinkDest == node.Type && bytes.HasPrefix(node.Tokens, []byte("assets/")) && bytes.HasSuffix(node.Tokens, []byte(" ")) {
-		node.Tokens = bytes.TrimSpace(node.Tokens)
-		*needFix = true
-	}
-
-	if ast.NodeText == node.Type && nil != tip.LastChild && ast.NodeTagOpenMarker == tip.LastChild.Type && 1 > len(node.Tokens) {
-		node.Tokens = []byte("Untitled")
-		*needFix = true
+	case ast.NodeWidget:
+		if bytes.Contains(node.Tokens, gulu.Str.ToBytes("http://127.0.0.1:6806")) {
+			node.Tokens = bytes.ReplaceAll(node.Tokens, []byte("http://127.0.0.1:6806"), nil)
+			*needFix = true
+		}
+	case ast.NodeList:
+		if nil != node.ListData && 3 != node.ListData.Typ && 0 < len(node.Children) &&
+			nil != node.Children[0].ListData && 3 == node.Children[0].ListData.Typ {
+			node.ListData.Typ = 3
+			*needFix = true
+		}
+	case ast.NodeMark:
+		if 3 == len(node.Children) && "NodeText" == node.Children[1].TypeStr {
+			if strings.HasPrefix(node.Children[1].Data, " ") || strings.HasSuffix(node.Children[1].Data, " ") {
+				node.Children[1].Data = strings.TrimSpace(node.Children[1].Data)
+				*needFix = true
+			}
+		}
+	case ast.NodeHeading:
+		if 6 < node.HeadingLevel {
+			node.HeadingLevel = 6
+			*needFix = true
+		}
+	case ast.NodeLinkDest:
+		if bytes.HasPrefix(node.Tokens, []byte("assets/")) && bytes.HasSuffix(node.Tokens, []byte(" ")) {
+			node.Tokens = bytes.TrimSpace(node.Tokens)
+			*needFix = true
+		}
+	case ast.NodeText:
+		if nil != tip.LastChild && ast.NodeTagOpenMarker == tip.LastChild.Type && 1 > len(node.Tokens) {
+			node.Tokens = []byte("Untitled")
+			*needFix = true
+		}
+	case ast.NodeTagCloseMarker:
+		if nil != tip.LastChild && "" == tip.LastChild.Text() {
+			tip.LastChild.Type = ast.NodeText
+			tip.LastChild.Tokens = []byte("Untitled")
+			*needFix = true
+		}
 	}
 
 	for _, kv := range node.KramdownIAL {
