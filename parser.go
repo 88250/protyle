@@ -73,6 +73,21 @@ func ParseJSON(luteEngine *lute.Lute, jsonData []byte) (ret *parse.Tree, needFix
 	for _, child := range root.Children {
 		genTreeByJSON(child, ret, &idMap, &needFix, false)
 	}
+
+	if nil == ret.Root.FirstChild {
+		// 如果是空文档的话挂一个空段落上去
+		newP := NewParagraph()
+		ret.Root.AppendChild(newP)
+		ret.Root.SetIALAttr("updated", newP.ID[:14])
+	}
+	return
+}
+
+func NewParagraph() (ret *ast.Node) {
+	newID := ast.NewNodeID()
+	ret = &ast.Node{ID: newID, Type: ast.NodeParagraph}
+	ret.SetIALAttr("id", newID)
+	ret.SetIALAttr("updated", newID[:14])
 	return
 }
 
